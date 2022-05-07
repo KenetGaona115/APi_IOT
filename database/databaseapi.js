@@ -21,6 +21,7 @@ const COMPLETE = 200
 const ERROR = 500
 
 async function createData(data) {
+  data.id = Date.now().toString();
   try {
     let doc = collection.doc(Date.now().toString());
     await doc.set(data);
@@ -33,7 +34,7 @@ async function createData(data) {
 }
 
 async function getAllData() {
-  const snapshot = await collection.get();
+  const snapshot = await collection.orderBy('id','desc').limit(1).get();
   let array = [];
   snapshot.forEach(doc => {
     array.push(doc.data());
