@@ -1,11 +1,7 @@
-const admin = require('firebase-admin');
-const firebase = require("firebase/app");
-const { v4: uuidv4 } = require('uuid');
-const { response } = require("express");
-require("firebase/firestore");
 
-// Your web app's Firebase configuration
-admin.initializeApp({ projectId: 'distribucionesgaona-50840' });
+const firebase = require("firebase/compat/app");
+const { response } = require("express");
+require("firebase/compat/firestore");
 
 const firebaseConfig = {
     apiKey: "AIzaSyB3BqaQ0cUHG6OIyJzEcaiJJnRhQpzmGSg",
@@ -19,17 +15,15 @@ const firebaseConfig = {
 
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
-const collectionPedidos = db.collection('PedidosNuevos');
-const collectionPedidosCapturados = db.collection('PedidosCapturados');
+const collection = db.collection('Datos');
 
 const COMPLETE = 200
 const ERROR = 500
 
-async function createPedido(pedido) {
-
+async function createData(data) {
   try {
-    let doc = collectionPedidos.doc(pedido.id);
-    await doc.set({ pedido });
+    let doc = collection.doc();
+    await doc.set(data);
     return COMPLETE;
   } catch (err) {
     console.error(err);
@@ -38,29 +32,11 @@ async function createPedido(pedido) {
 
 }
 
-
-async function deletePedido(id) {
-  const snapshot = await collectionPedidos.doc(id).delete();
-  return snapshot
-}
-
-async function updatePedido(pedido) {
-  try {
-    await collectionPedidos.doc(pedido.id).set({
-      pedido
-    })
-    return true;
-  } catch (error) {
-    console.log(error)
-    return false;
-  }
-}
-
-async function getAllPedidosPendientes() {
-  const snapshot = await collectionPedidos.where('pedido.estadoPedido', '==', '1').get();
+async function getAllData() {
+  const snapshot = await collection.get();
   let array = [];
   snapshot.forEach(doc => {
-    array.push(doc.data().pedido);
+    array.push(doc.data());
   });
   if (array.length != 0)
     return array
@@ -68,47 +44,8 @@ async function getAllPedidosPendientes() {
     return null
 }
 
-async function getAllPedidosCapturados() {
-  const snapshot = await collectionPedidos.where('pedido.estadoPedido', '==', '2').get();
-  let array = [];
-  snapshot.forEach(doc => {
-    array.push(doc.data().pedido);
-  });
-  if (array.length != 0)
-    return array
-  else
-    return null
-}
-
-async function getAllCustomerOrders(id) {
-  const snapshot = await collectionPedidos.where('pedido.claveCliente', '==',id).get();
-  let array = [];
-  snapshot.forEach(doc => {
-    array.push(doc.data().pedido);
-  });
-  if (array.length != 0)
-    return array
-  else
-    return null
-}
 
 module.exports = {
-  /* 
-    Create 
-  */
-  createPedido: createPedido,
-  /*
-    Get
-  */
-  getAllPedidosPendientes: getAllPedidosPendientes,
-  getAllPedidosCapturados: getAllPedidosCapturados,
-  getAllCustomerOrders: getAllCustomerOrders,
-  /*
-    Update
-  */
-  updatePedido: updatePedido,
-  /*
-    Delete
-  */
- deletePedido: deletePedido
+  createData: createData,
+  getAllData: getAllData,
 };

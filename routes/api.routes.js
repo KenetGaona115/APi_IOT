@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const database = require('../Database/databaseAPI')
+const database = require('../database/databaseapi')
 
 //all response 
 //Retorna una llamada exitosa
@@ -13,15 +13,15 @@ const jsonError = {
   'status': 500
 }
 
-router.get('/getAllProducts', async function (req, res, next) {
-  const products = await database.getAllProducts()
-  res.send(products);
+router.get('/getAllData', async function (req, res, next) {
+  const data = await database.getAllData()
+  res.send(data);
 })
 
 
 //Post para regresar los datos del usuario
-router.post('/getUser', async function (req, res, next) {
-  user = await database.getUserByEmail(req.body.email)
+router.post('/sendData', async function (req, res, next) {
+  user = await database.createData(req.body)
   res.send(user)
 })
 

@@ -4,7 +4,7 @@ const cors = require('cors');
 const bodyParser = require('body-parser')
 
 const app = express();
-
+app.listen(process.env.PORT || 3000, () => console.log('Listening'));
 // parse application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: false }))
 // parse application/json
