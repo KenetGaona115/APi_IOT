@@ -22,7 +22,7 @@ const ERROR = 500
 
 async function createData(data) {
   try {
-    let doc = collection.doc();
+    let doc = collection.doc(Date.now().toString());
     await doc.set(data);
     return COMPLETE;
   } catch (err) {
